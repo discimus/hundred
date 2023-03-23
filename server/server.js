@@ -2,7 +2,7 @@ import WebSocket, { WebSocketServer } from "ws"
 import randomWords from "random-words"
 
 const wssConfig = {
-    port: 8181
+    port: process.env.PORT || 8181
 }
 
 const wss = new WebSocketServer(wssConfig)
