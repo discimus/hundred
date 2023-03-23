@@ -15,6 +15,10 @@
 
     <div id="app" class="bg-green-100">
         <div class="p-3 m-auto h-screen max-w-md flex flex-col">
+        <div>
+            <b>Host:&nbsp;</b>
+            <span v-html="host"></span>
+        </div>
         <div class="grow flex flex-col overflow-y-scroll">
             <div v-for="message in messages">
                 <span v-html="message"></span>
@@ -38,11 +42,12 @@
                 return {
                     text: "",
                     messages: [],
-                    ws: null
+                    ws: null,
+                    host: "wss://hundred-production.up.railway.app"
                 }
             },
             created() {
-                const ws = new WebSocket(`ws://${window.location.host}:8181`)
+                const ws = new WebSocket(this.host)
 
                 ws.addEventListener("open", () => console.log("Connected with remote server"))
                 ws.addEventListener("message", t => this.messages.push(String(t.data)))
