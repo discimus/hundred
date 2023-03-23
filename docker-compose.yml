@@ -7,11 +7,11 @@ services:
       dockerfile: server/Dockerfile
     ports:
       - 8181:8181
-  client:
-    build: 
-      context: .
-      dockerfile: client/Dockerfile
-    ports:
-      - 80:80
-    volumes:
-      - ./client/:/usr/share/nginx/html
+  # client:
+  #   build: 
+  #     context: .
+  #     dockerfile: client/Dockerfile
+  #   ports:
+  #     - 80:80
+  #   volumes:
+  #     - ./client/:/usr/share/nginx/html
