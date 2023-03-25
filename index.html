@@ -46,7 +46,7 @@
             data() {
                 return {
                     text: "",
-                    messages: [],
+                    messages: ["Trying to connect you..."],
                     ws: null,
                     host: "wss://hundred-production.up.railway.app",
                     // host: "ws://localhost:8181",
@@ -58,9 +58,8 @@
             created() {
                 const ws = new WebSocket(this.host)
 
-                ws.addEventListener("open", () => console.log("Connected with remote server"))
+                ws.addEventListener("open", () => this.handleOpenConnection())
                 ws.addEventListener("message", t => this.handleServerMessage(JSON.parse(String(t.data))))
-                // ws.addEventListener("message", t => this.test(t))
                 this.ws = ws
             },
             methods: {
@@ -71,9 +70,6 @@
                         this.text = ""
                     }
                 },
-                test(t) {
-                    this.messages.push(String(t.data))
-                },
                 handleServerMessage({ type, payload }) {
                     if (type == payloadOf.TEXT_MESSAGE) {
                         this.messages.push(String(payload))
@@ -82,6 +78,10 @@
                     if (type == payloadOf.ONLINE_USERS_COUNT) {
                         this.stats.onlineCount = payload
                     }
+                },
+                handleOpenConnection() {
+                    console.log("Connected with remote server")
+                    this.messages = []
                 }
             }
         }
