@@ -1,0 +1,11 @@
+FROM node:16-alpine
+
+WORKDIR /usr/src/app
+
+COPY package-lock.json package-lock.json
+COPY package.json package.json
+
+RUN npm install
+RUN npm install -g nodemon
+
+CMD [ "nodemon", "-L", "server.js" ]

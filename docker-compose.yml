@@ -3,9 +3,12 @@ version: '2'
 services:
   server:
     build:
-      dockerfile: server/Dockerfile
+      context: server/
+      dockerfile: Dockerfile.dev
     ports:
       - 8181:8181
+    volumes:
+      - ./server/server.js:/usr/src/app/server.js
   client:
     build: 
       dockerfile: client/Dockerfile
