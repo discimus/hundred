@@ -11,8 +11,8 @@ services:
       - ./server/server.js:/usr/src/app/server.js
   client:
     build: 
-      dockerfile: client/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - 80:80
     volumes:
-      - ./client/:/usr/share/nginx/html
+      - ./index.html:/usr/share/nginx/html/index.html

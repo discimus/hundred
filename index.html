@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hundred</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="src/style.css">
+</head>
+
+<body>
+    <script src="https://unpkg.com/vue@3"></script>
+
+    <div id="app" class="bg-gray-600">
+        <div class="p-3 m-auto h-screen max-w-md flex flex-col">
+            <div class="text-slate-300">
+                <b class="text-slate-400">Online now:&nbsp;</b>
+                <span v-html="stats.onlineCount"></span>
+            </div>
+            <div class="grow flex flex-col overflow-y-scroll">
+                <div v-for="message in messages">
+                    <span v-html="message" class="text-white"></span>
+                </div>
+            </div>
+            <div class="bottom-0 w-full flex flex-col gap-3">
+                <textarea v-model="text" name="text" id="text" cols="30" rows="3" class="p-3 rounded rounded-xl bg-stone-300"></textarea>
+                <button @click="sendMessage"
+                    class="shadow-md active:shadow-none rounded-lg bg-stone-200 px-3 py-1 max-h-9">
+                    <span class="font-semibold text-lg text-neutral-600">Send Message</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const payloadOf = {
+            TEXT_MESSAGE: 0,
+            ONLINE_USERS_COUNT: 1,
+        }
+    </script>
+    <script>
+        const { createApp } = Vue
+
+        const appConfig = {
+            data() {
+                return {
+                    text: "",
+                    messages: [],
+                    ws: null,
+                    // host: "wss://hundred-production.up.railway.app"
+                    host: "ws://localhost:8181",
+                    stats: {
+                        onlineCount: 0,
+                    }
+                }
+            },
+            created() {
+                const ws = new WebSocket(this.host)
+
+                ws.addEventListener("open", () => console.log("Connected with remote server"))
+                ws.addEventListener("message", t => this.handleServerMessage(JSON.parse(String(t.data))))
+                // ws.addEventListener("message", t => this.test(t))
+                this.ws = ws
+            },
+            methods: {
+                sendMessage() {
+                    console.log(this.text);
+                    if (this.text != "") {
+                        this.ws.send(this.text)
+                        this.text = ""
+                    }
+                },
+                test(t) {
+                    this.messages.push(String(t.data))
+                },
+                handleServerMessage({ type, payload }) {
+                    if (type == payloadOf.TEXT_MESSAGE) {
+                        this.messages.push(String(payload))
+                    }
+
+                    if (type == payloadOf.ONLINE_USERS_COUNT) {
+                        this.stats.onlineCount = payload
+                    }
+                }
+            }
+        }
+
+        createApp(appConfig).mount('#app')
+    </script>
+</body>
+
+</html>
